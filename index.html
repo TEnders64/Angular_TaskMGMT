@@ -1,0 +1,108 @@
+<html ng-app="myApp">
+<head>
+	<title>Task MGMT</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+	<script>
+		var myApp = angular.module('myApp',[]);
+
+		myApp.factory('tasksFactory', function (){
+			var tasks = [
+			 {
+				desc: 'Eat Lunch',
+			 	priority: 'High',
+			 	deadline: 'June 1st 2015',
+			 	created: 'June 1st 2015'
+			 },
+			 {
+			 	desc: 'Get Black Belt',
+			 	priority: 'High',
+			 	deadline: 'September 23rd 2015',
+			 	created: 'June 1st 2015'
+			 },
+			 {
+			 	desc: 'Play Basketball',
+			 	priority: 'Medium',
+			 	deadline: 'March 23rd 2016',
+			 	created: 'November 1st 2015'
+			 }
+			];
+			var factory = {};
+
+			factory.getTasks = function (callback){
+				callback(tasks);
+			}
+			return factory;
+		});
+
+		myApp.controller('tasksController', function ($scope, tasksFactory){
+			$scope.tasks = [];
+
+			tasksFactory.getTasks(function (data){
+				$scope.tasks = data;
+			});
+
+			$scope.newTask = function (){
+				$scope.newTask.created = new Date();
+				$scope.tasks.push($scope.newTask);
+			}
+
+			$scope.removeTask = function (task){
+				$scope.tasks.splice($scope.tasks.indexOf(task),1);
+			}
+		});
+
+	</script>
+</head>
+<body ng-controller="tasksController">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-10 col-md-offset-1">
+				<h3>Tasks</h3>
+				<table class="table table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Tasks</th>
+							<th>Priority</th>
+							<th>Deadline</th>
+							<th>Created</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="task in tasks">
+							<td ng-bind="task.desc"></td>
+							<td ng-bind="task.priority"></td>
+							<td ng-bind="task.deadline"></td>
+							<td ng-bind="task.created"></td>
+							<td><button class="btn btn-md btn-danger" ng-click="removeTask(task)">Remove</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row">
+			<h3>Add a new task</h3>
+			<form class="form">
+				<div class="form-group">
+					<label for="name">Task Name: </label>
+					<input type="text" id="name" ng-model="newTask.desc"/>
+				</div>
+				<div class="form-group">
+					<label for="priority">Priority: </label>
+					<select id="priority" ng-model="newTask.priority">
+						<option value="high">High</option>
+						<option value="medium">Medium</option>
+						<option value="low">Low</option>
+					</select>
+				</div>
+				<div class="form-group">
+					<label for="deadline">Deadline: </label>
+					<input type="date" ng-model="newTask.deadline" id="deadline" />
+				</div>
+				<button class="btn btn-md btn-success" ng-click="newTask()">Create</button>
+			</form>
+		</div>
+	</div>
+</body>
+</html>
